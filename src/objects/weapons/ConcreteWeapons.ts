@@ -46,7 +46,7 @@ export class MeleeWeapon extends Weapon {
         super(scene, stats);
     }
 
-    shoot(shooter: Phaser.GameObjects.Sprite, targetX: number, targetY: number) {
+    shoot(_shooter: Phaser.GameObjects.Sprite, _targetX: number, _targetY: number) {
         if (!this.canFire(this.scene.time.now)) return;
 
         this.lastFiredTime = this.scene.time.now;
