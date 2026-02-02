@@ -4,7 +4,7 @@ import { MapGenerator } from '../core/MapGenerator';
 import { Player } from '../objects/Player';
 
 export class MainScene extends Phaser.Scene {
-    private player!: Player;
+    public player!: Player;
     private waterColliders!: Phaser.Physics.Arcade.StaticGroup;
 
     constructor() {
@@ -33,6 +33,9 @@ export class MainScene extends Phaser.Scene {
         this.input.keyboard!.on('keydown-F', () => {
             console.log('F key pressed - Interact attempt');
         });
+
+        // Launch UI
+        this.scene.launch('UIScene');
     }
 
     update() {

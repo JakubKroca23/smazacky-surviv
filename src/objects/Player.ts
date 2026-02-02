@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
 import { CONFIG } from '../config';
+import { InventoryManager } from '../managers/InventoryManager';
+import { WeaponFactory } from './weapons/WeaponFactory';
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
     private keys: {
@@ -10,6 +12,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         interact: Phaser.Input.Keyboard.Key;
     };
     private weaponVisual: Phaser.GameObjects.Rectangle;
+    public inventory: InventoryManager;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, 'player');
@@ -42,11 +45,21 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         // Weapon Visual
         this.weaponVisual = scene.add.rectangle(0, 0, 24, 8, 0x000000);
         this.weaponVisual.setDepth(11);
+
+        // Keys for Weapon Switching
+        scene.input.keyboard!.on('keydown-ONE', () => this.inventory.switchSlot('primary'));
+        scene.input.keyboard!.on('keydown-TWO', () => this.inventory.switchSlot('secondary'));
+        scene.input.keyboard!.on('keydown-R', () => this.inventory.getActiveWeapon()?.reload());
+
+        // Inventory Init
+        this.inventory = new InventoryManager();
+        this.inventory.equipWeapon(WeaponFactory.createKnife(scene));
     }
 
     update() {
         this.handleMovement();
         this.handleRotation();
+        this.handleShooting();
     }
 
     private handleMovement() {
@@ -88,5 +101,15 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.weaponVisual.x = this.x + Math.cos(angle) * weaponOffset;
         this.weaponVisual.y = this.y + Math.sin(angle) * weaponOffset;
         this.weaponVisual.setRotation(angle);
+    }
+
+    private handleShooting() {
+        const pointer = this.scene.input.activePointer;
+        if (pointer.isDown) {
+            const weapon = this.inventory.getActiveWeapon();
+            if (weapon) {
+                weapon.shoot(this, pointer.worldX, pointer.worldY);
+            }
+        }
     }
 }

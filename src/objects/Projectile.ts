@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 
 export class Projectile extends Phaser.Physics.Arcade.Sprite {
     private damage: number;
-    private speed: number;
+
     private maxDistance: number;
     private startX: number;
     private startY: number;
@@ -14,7 +14,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
         this.scene.physics.add.existing(this);
 
         this.damage = damage;
-        this.speed = speed;
+
         this.maxDistance = maxDistance;
         this.startX = x;
         this.startY = y;
