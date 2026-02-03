@@ -5,6 +5,7 @@ export class UIScene extends Phaser.Scene {
     private healthText!: Phaser.GameObjects.Text;
     private ammoText!: Phaser.GameObjects.Text;
     private weaponText!: Phaser.GameObjects.Text;
+    private zoneText!: Phaser.GameObjects.Text;
     private mainScene!: MainScene;
 
     constructor() {
@@ -27,6 +28,14 @@ export class UIScene extends Phaser.Scene {
 
         // Ammo
         this.ammoText = this.add.text(20, 80, 'Ammo: -/-', { fontSize: '18px', color: '#ffffff' });
+
+        // Zone Status
+        this.zoneText = this.add.text(window.innerWidth / 2, 50, 'Zone Waiting', {
+            fontSize: '24px',
+            color: '#ff0000',
+            align: 'center'
+        });
+        this.zoneText.setOrigin(0.5);
     }
 
     update() {
@@ -35,9 +44,8 @@ export class UIScene extends Phaser.Scene {
         const player = this.mainScene.player;
         const weapon = player.inventory.getActiveWeapon();
 
-        // Update Health (Placeholder property)
-        // TODO: specific health property on player
-        this.healthText.setText(`Health: 100`);
+        // Update Health
+        this.healthText.setText(`Health: ${Math.ceil(player.health)}`);
 
         if (weapon) {
             this.weaponText.setText(`Weapon: ${weapon.stats.name}`);
@@ -50,6 +58,13 @@ export class UIScene extends Phaser.Scene {
         } else {
             this.weaponText.setText('Weapon: None');
             this.ammoText.setText('');
+        }
+
+        // Zone Info
+        const zone = this.mainScene.zoneSystem;
+        if (zone) {
+            const timeLeft = Math.ceil(zone.getPhaseTimeLeft() / 1000);
+            this.zoneText.setText(`Zone: ${timeLeft}s`);
         }
     }
 }

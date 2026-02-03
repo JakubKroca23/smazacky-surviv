@@ -2,9 +2,11 @@ import Phaser from 'phaser';
 import { CONFIG } from '../config';
 import { MapGenerator } from '../core/MapGenerator';
 import { Player } from '../objects/Player';
+import { ZoneSystem } from '../systems/ZoneSystem';
 
 export class MainScene extends Phaser.Scene {
     public player!: Player;
+    public zoneSystem!: ZoneSystem;
     private waterColliders!: Phaser.Physics.Arcade.StaticGroup;
 
     constructor() {
@@ -36,11 +38,15 @@ export class MainScene extends Phaser.Scene {
 
         // Launch UI
         this.scene.launch('UIScene');
+
+        // Init Zone
+        this.zoneSystem = new ZoneSystem(this);
     }
 
-    update() {
+    update(time: number, delta: number) {
         if (this.player) {
             this.player.update();
+            this.zoneSystem.update(time, delta, this.player);
         }
     }
 }

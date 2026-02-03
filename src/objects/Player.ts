@@ -13,6 +13,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     };
     private weaponVisual: Phaser.GameObjects.Rectangle;
     public inventory: InventoryManager;
+    public health: number = 100;
+    public maxHealth: number = 100;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, 'player');
@@ -110,6 +112,21 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             if (weapon) {
                 weapon.shoot(this, pointer.worldX, pointer.worldY);
             }
+        }
+    }
+
+    public takeDamage(amount: number) {
+        this.health -= amount;
+        if (this.health <= 0) {
+            this.health = 0;
+            console.log('Player Died');
+            // TODO: Game Over Logic
+            this.setTint(0xff0000);
+        } else {
+            // Flash red
+            this.clearTint();
+            this.setTint(0xffaaaa);
+            this.scene.time.delayedCall(100, () => this.clearTint());
         }
     }
 }
