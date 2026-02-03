@@ -66,25 +66,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.updateWeaponVisual();
     }
 
-    private updateWeaponVisual() {
-        const weapon = this.inventory.getActiveWeapon();
-        if (weapon) {
-            this.weaponVisual.setVisible(true);
-            // Map weapon name to texture
-            let texture = 'weapon-knife';
-            const name = weapon.stats.name.toLowerCase();
-            if (name.includes('ak')) texture = 'weapon-ak47';
-            else if (name.includes('glock')) texture = 'weapon-glock';
-            else if (name.includes('shotgun')) texture = 'weapon-shotgun';
-            else if (name.includes('knife')) texture = 'weapon-knife';
 
-            if (this.weaponVisual.texture.key !== texture) {
-                this.weaponVisual.setTexture(texture);
-            }
-        } else {
-            this.weaponVisual.setVisible(false);
-        }
-    }
 
     private handleMovement() {
         const { up, down, left, right } = this.keys;
@@ -135,6 +117,20 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
 
+
+    private handleShooting() {
+        const pointer = this.scene.input.activePointer;
+        if (pointer.isDown) {
+            const weapon = this.inventory.getActiveWeapon();
+            if (weapon) {
+                // Check if weapon is ready to fire before animating
+                if (weapon.canFire(this.scene.time.now)) {
+                    weapon.shoot(this, pointer.worldX, pointer.worldY);
+                    this.playAttackAnimation(weapon.stats.name);
+                }
+            }
+        }
+    }
 
     private playAttackAnimation(weaponName: string) {
         // Simple tween animation based on weapon type
