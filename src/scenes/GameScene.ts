@@ -7,6 +7,8 @@ import { Enemy } from '../objects/enemies/Enemy';
 import { Junkie, Police } from '../objects/enemies/ConcreteEnemies';
 import { Car } from '../objects/vehicles/Car';
 import { Projectile } from '../objects/Projectile';
+import { WeaponFactory } from '../objects/weapons/WeaponFactory';
+import { Loot } from '../objects/Loot';
 
 export class GameScene extends Phaser.Scene {
     public player!: Player;
@@ -29,10 +31,23 @@ export class GameScene extends Phaser.Scene {
     }
 
     create() {
+        // Enable Lights
+        this.lights.enable().setAmbientColor(0x101010);
+
         // Generate World
         const mapData = MapGenerator.generateMap(this);
         this.waterColliders = mapData.waterColliders;
         this.roofs = mapData.roofs; // Store it
+        // Setup Loot interactions
+        if (mapData.lootGroup) {
+            this.setupLootInteractions(mapData.lootGroup);
+
+            // Set pipeline for loot too?
+            mapData.lootGroup.getChildren().forEach((child: any) => {
+                // child is a Sprite likely (Loot extends Sprite?)
+                if (child.setPipeline) child.setPipeline('Light2D');
+            });
+        }
 
         // Projectile Group
         this.projectiles = this.physics.add.group({
@@ -53,8 +68,18 @@ export class GameScene extends Phaser.Scene {
         this.player = new Player(this, centerX, centerY, this.nickname);
 
         // Spawn Test Car nearby
-        const car = new Car(this, centerX + 150, centerY);
-        this.vehicles.add(car);
+        // Spawn Vehicles (Police & SWAT)
+        // Spawn 1 Police Car near player
+        const policeCar = new Car(this, centerX + 150, centerY, 'vehicle-police');
+        policeCar.setDisplaySize(70, 140); // Scale down PNG
+        policeCar.body!.setSize(60, 120); // Adjust physics body
+        this.vehicles.add(policeCar);
+
+        // Spawn 1 SWAT Van
+        const swatVan = new Car(this, centerX - 150, centerY + 100, 'vehicle-swat');
+        swatVan.setDisplaySize(80, 160); // Slightly larger
+        swatVan.body!.setSize(70, 140);
+        this.vehicles.add(swatVan);
 
         // Enemy Group
         this.enemies = this.physics.add.group({
@@ -108,38 +133,96 @@ export class GameScene extends Phaser.Scene {
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
         this.cameras.main.setBounds(0, 0, CONFIG.MAP_WIDTH * CONFIG.TILE_SIZE, CONFIG.MAP_HEIGHT * CONFIG.TILE_SIZE);
 
+        // Add Bloom for Cyberpunk Vibe
+        if (this.cameras.main.postFX) {
+            this.cameras.main.postFX.addBloom(0xffffff, 1, 1, 1.2, 1.0);
+        }
+
         // Input Listener for F (Interaction)
         // Just a debug log for now
         this.physics.add.collider(this.vehicles, this.vehicles);
         this.physics.add.collider(this.player, this.vehicles); // Player collides with car (if not driving)
         this.physics.add.collider(this.vehicles, this.enemies); // Car pushes enemies
 
-        // Input Listener for F (Interaction)
-        this.input.keyboard!.on('keydown-F', () => {
-            // Check for interactions
-            if (this.player && this.player.active) { // Only if player is active (not already driving?)
-                // Actually, if driving, the CAR handles the 'F' input in update() or we handle it here?
-                // If player is disabled (in car), this listener might still fire if we don't check.
-                // Better: If player is visible/enabled, try to enter.
-
-                if (this.player.body?.enable) {
-                    const cars = this.vehicles.getChildren() as Car[];
-                    for (const c of cars) {
-                        // Interactive distance
-                        if (Phaser.Math.Distance.Between(this.player.x, this.player.y, c.x, c.y) < 100) {
-                            c.enterCar(this.player);
-                            break; // Enter first valid car
-                        }
-                    }
-                }
-            }
-        });
-
         // Launch UI
         this.scene.launch('UIScene');
 
         // Init Zone
         this.zoneSystem = new ZoneSystem(this);
+
+        this.setupInput();
+    }
+
+    private lootGroup!: Phaser.Physics.Arcade.Group; // Store loot group
+
+    private setupLootInteractions(lootGroup: Phaser.Physics.Arcade.Group) {
+        this.lootGroup = lootGroup;
+
+        // Auto-pickup for Ammo/Medkits (Overlap)
+        this.physics.add.overlap(this.player, this.lootGroup, (_player: any, loot: any) => {
+            const l = loot as Loot; // Cast to Loot
+            const type = l.lootType;
+
+            if (type.includes('ammo') || type === 'medkit') {
+                // Auto Pickup
+                if (type.includes('ammo')) {
+                    this.player.inventory.addAmmo(type, l.amount);
+                } else {
+                    this.player.inventory.addItem(type, l.amount);
+                }
+                l.destroy();
+            }
+        });
+    }
+
+
+
+    // Modified Create with Loot Setup call
+    // ...
+    // Note: I can't just inject code in middle easily.
+    // I will replace the end of create() and add the F-key logic block there.
+    // Actually, I should update the 'F' key block to iterate loot too.
+
+    private setupInput() {
+        this.input.keyboard!.on('keydown-F', () => {
+            // Check for interactions
+            if (this.player && this.player.active) {
+                if (this.player.body?.enable) {
+                    // 1. Enter Car
+                    const cars = this.vehicles.getChildren() as Car[];
+                    let enteredCar = false;
+                    for (const c of cars) {
+                        if (Phaser.Math.Distance.Between(this.player.x, this.player.y, c.x, c.y) < 100) {
+                            c.enterCar(this.player);
+                            enteredCar = true;
+                            break;
+                        }
+                    }
+                    if (enteredCar) return;
+
+                    // 2. Pick up Weapon (Loot)
+                    if (this.lootGroup) {
+                        const items = this.lootGroup.getChildren() as any[];
+                        for (const item of items) {
+                            if (Phaser.Math.Distance.Between(this.player.x, this.player.y, item.x, item.y) < 60) {
+                                // Pick up weapon
+                                if (item.lootType.includes('weapon')) {
+                                    let weapon;
+                                    if (item.lootType === 'weapon_ak47') weapon = WeaponFactory.createAK47(this);
+                                    else if (item.lootType === 'weapon_glock') weapon = WeaponFactory.createGlock(this);
+                                    else if (item.lootType === 'weapon_shotgun') weapon = WeaponFactory.createShotgun(this);
+
+                                    if (weapon) {
+                                        this.player.inventory.equipWeapon(weapon);
+                                        item.destroy();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
     update(time: number, delta: number) {

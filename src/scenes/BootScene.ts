@@ -40,9 +40,10 @@ export class BootScene extends Phaser.Scene {
         this.load.svg('env-rock-small', 'assets/env-rock-small.svg');
         this.load.svg('env-rock-med', 'assets/env-rock-med.svg');
         this.load.svg('env-rock-large', 'assets/env-rock-large.svg');
-        this.load.svg('env-tree-a', 'assets/env-tree-a.svg');
-        this.load.svg('env-tree-b', 'assets/env-tree-b.svg');
-        this.load.svg('env-tree-c', 'assets/env-tree-c.svg');
+        // Trees (PNG - Photorealistic)
+        this.load.image('env-tree-a', 'assets/env-tree-a.png');
+        this.load.image('env-tree-b', 'assets/env-tree-b.png');
+        this.load.image('env-tree-c', 'assets/env-tree-c.png');
 
         // Enemies
         this.load.svg('enemy-junkie', 'assets/images/enemies/enemy_junkie.svg');
@@ -53,7 +54,14 @@ export class BootScene extends Phaser.Scene {
         this.load.svg('weapon-needle', 'assets/images/weapons/needle.svg');
 
         // Vehicles
-        this.load.svg('vehicle-sedan', 'assets/vehicle-sedan.svg');
+        this.load.svg('vehicle-sedan', 'assets/vehicle-sedan.svg'); // Keep old one
+        this.load.image('vehicle-police', 'assets/vehicle-police.png');
+        this.load.image('vehicle-swat', 'assets/vehicle-swat.png');
+
+        // NEW ASSETS (Visual Overhaul)
+        this.load.image('floor-industrial', 'assets/floor_industrial.png');
+        this.load.image('wall-urban', 'assets/wall_urban.png');
+        this.load.image('player-survivor', 'assets/player_survivor.png');
     }
 
     create() {

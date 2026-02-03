@@ -5,7 +5,7 @@ import { GameScene } from './scenes/GameScene';
 import { UIScene } from './scenes/UIScene';
 import { LobbyScene } from './scenes/LobbyScene';
 
-const gameConfig: Phaser.Types.Core.GameConfig = {
+const gameConfig: Phaser.Types.Core.GameConfig | any = {
     type: Phaser.AUTO,
     width: window.innerWidth,
     height: window.innerHeight,
@@ -15,8 +15,12 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
         default: 'arcade',
         arcade: {
             gravity: { x: 0, y: 0 },
-            debug: true // Enable debug for now as requested
+            debug: false
         }
+    },
+    lights: {
+        enable: true,
+        ambientColor: 0x101010 // Very dark ambient light
     },
     dom: {
         createContainer: true

@@ -27,26 +27,32 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     private leftHand: Phaser.GameObjects.Sprite;
     private rightHand: Phaser.GameObjects.Sprite;
 
+    private flashlight: Phaser.GameObjects.Light;
+
     constructor(scene: Phaser.Scene, x: number, y: number, nickname: string = 'Survivor') {
-        super(scene, x, y, 'player');
+        super(scene, x, y, 'player-survivor'); // Use new asset
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
+        // Enable Lighting on Player
+        this.setPipeline('Light2D');
+
+        // Create Flashlight
+        this.flashlight = scene.lights.addLight(x, y, 400, 0xffffff, 2);
+
         // Create Nameplate
-        this.nameText = scene.add.text(x, y - 40, nickname, {
+        this.nameText = scene.add.text(x, y - 50, nickname, { // Raised slightly
             fontSize: '14px',
             color: '#ffffff',
             stroke: '#000000',
             strokeThickness: 3,
             align: 'center'
-        }).setOrigin(0.5).setDepth(12);
+        }).setOrigin(0.5).setDepth(25); // Higher depth
 
         // Physics Body Config
         this.setCircle(16); // Derived from 32x32 texture
         this.setDrag(CONFIG.PLAYER_DRAG);
-        this.setDamping(true);
-        this.setDamping(false);
         this.setMaxVelocity(CONFIG.PLAYER_SPEED);
         this.setCollideWorldBounds(true);
 
@@ -120,7 +126,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         const acceleration = 1500;
 
         // Water Slow Logic
-        const speedModifier = this.isInWater ? 0.1 : 1.0;
+        const speedModifier = this.isInWater ? 0.4 : 1.0;
         const currentMaxSpeed = CONFIG.PLAYER_SPEED * speedModifier;
         this.setMaxVelocity(currentMaxSpeed);
 
@@ -299,7 +305,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     preUpdate(time: number, delta: number) {
         super.preUpdate(time, delta);
         if (this.nameText) {
-            this.nameText.setPosition(this.x, this.y - 40);
+            this.nameText.setPosition(this.x, this.y - 50);
+        }
+        if (this.flashlight) {
+            this.flashlight.setPosition(this.x, this.y);
         }
     }
 }
