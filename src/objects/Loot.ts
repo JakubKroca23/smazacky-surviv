@@ -25,6 +25,7 @@ export class Loot extends Phaser.Physics.Arcade.Sprite {
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
+        this.setPipeline('Light2D');
 
         this.setDepth(5); // Below player
         this.setScale(0.8);

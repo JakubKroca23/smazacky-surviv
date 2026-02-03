@@ -69,6 +69,7 @@ export abstract class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(time: number, delta: number) {
+        // console.log(`Enemy Update: ${this.texture.key}, state=${this.aiState}`);
         if (this.hp <= 0) {
             this.hpBar.clear();
             return;

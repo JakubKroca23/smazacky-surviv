@@ -68,6 +68,13 @@ export class MapGenerator {
         }
 
         // 3. Render Map
+        // SEAMLESS FLOOR (One giant TileSprite)
+        const totalWidth = CONFIG.MAP_WIDTH * CONFIG.TILE_SIZE;
+        const totalHeight = CONFIG.MAP_HEIGHT * CONFIG.TILE_SIZE;
+        const floor = scene.add.tileSprite(totalWidth / 2, totalHeight / 2, totalWidth, totalHeight, 'floor-industrial');
+        floor.setDepth(-1); // Background
+        floor.setPipeline('Light2D');
+
         for (let y = 0; y < CONFIG.MAP_HEIGHT; y++) {
             for (let x = 0; x < CONFIG.MAP_WIDTH; x++) {
                 const worldX = x * CONFIG.TILE_SIZE + CONFIG.TILE_SIZE / 2;
@@ -78,6 +85,8 @@ export class MapGenerator {
                     // Water Logic: Water is now a zone, not a solid wall
                     const tile = scene.add.image(worldX, worldY, 'water');
                     tile.setDepth(0);
+                    tile.setTint(0x003344); // Dark cyan/blue tint for cyberpunk feel
+                    tile.setPipeline('Light2D');
 
                     const waterBody = waterColliders.create(worldX, worldY, 'water');
                     waterBody.setVisible(false);
@@ -90,13 +99,8 @@ export class MapGenerator {
                     if (x < CONFIG.MAP_WIDTH - 1 && grid[y][x + 1] !== 'water') scene.add.image(worldX, worldY, 'water-edge-right').setDepth(1);
 
                 } else {
-                    // Concrete Floor (Industrial)
-                    // Use 'floor-industrial' instead of 'grass'
-                    // TILE_SIZE is 100, image is 512. Scale it.
-                    const floor = scene.add.image(worldX, worldY, 'floor-industrial');
-                    floor.setDisplaySize(CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
-                    floor.setDepth(0);
-                    floor.setPipeline('Light2D'); // Enable lighting
+                    // Floor Renders via TileSprite now
+                    // Just spawn objects
 
                     // Vegetation (only on grass)
                     // Lower spawn rate slightly as objects are larger?
@@ -171,13 +175,25 @@ export class MapGenerator {
             // Right Wall
             buildings.create(bx + w / 2, by, 'wall-urban').setDisplaySize(20, h).setDepth(15).setPipeline('Light2D').refreshBody();
 
-            // Floor (Inside)
-            scene.add.rectangle(bx, by, w, h, 0x5d4037).setDepth(1); // Wood floor
+            // Floor (Inside) - Technical dark floor
+            scene.add.rectangle(bx, by, w, h, CONFIG.COLORS.BACKGROUND).setDepth(1).setPipeline('Light2D');
 
             // Roof (Visual)
-            const roof = scene.add.rectangle(bx, by, w + 20, h + 20, 0x3e2723); // Dark brown roof
-            roof.setDepth(30); // High depth (above trees?)
+            const roofColors = [0x111111, 0x1a1a1a, 0x0a0a0a];
+            const roofColor = Phaser.Math.RND.pick(roofColors);
+            const roof = scene.add.rectangle(bx, by, w + 20, h + 20, roofColor);
+            roof.setDepth(30);
             roofs.add(roof);
+
+            // Add a Neon Light in the center of the building
+            const neonColors = [0x00fbff, 0xff00ff, 0x00ff00];
+            const neonColor = Phaser.Math.RND.pick(neonColors);
+            scene.lights.addLight(bx, by, 300, neonColor, CONFIG.LIGHTING.NEON_INTENSITY);
+
+            // Add Flare visual
+            const flareKey = neonColor === 0x00fbff ? 'light-flare-cyan' : 'light-flare-purple';
+            const flare = scene.add.image(bx, by, flareKey).setDepth(2).setAlpha(0.6).setScale(2.0);
+            flare.setBlendMode(Phaser.BlendModes.ADD);
 
             // Roof Zone (Sensor)
             const zone = roofZones.create(bx, by, 'grass'); // generic texture

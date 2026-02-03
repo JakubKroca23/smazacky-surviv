@@ -62,29 +62,4 @@ export class WeaponFactory {
             isAutomatic: false
         });
     }
-
-    static createNeedle(scene: Phaser.Scene): Weapon {
-        // Needle is now a Ranged Weapon (Throwable)
-        return new RangedWeapon(scene, {
-            name: 'Needle',
-            damage: 5,
-            range: 1000, // 10 Tiles * 100
-            fireRate: 2000, // Slow throw
-            ammoType: 'none', // Infinite for Junkies? Or uses stack? 
-            magazineSize: 1, // Single throw
-            maxAmmo: 100, // Infinite for now
-            reloadTime: 500,
-            spread: 5,
-            isAutomatic: false,
-            projectileProps: {
-                poison: {
-                    duration: 5000,
-                    damage: 2, // 2 damage per second? Or total? "2HP/S"
-                    interval: 1000
-                },
-                dropOnMiss: 'weapon-needle',
-                speed: 400 // Slow throw
-            }
-        });
-    }
 }

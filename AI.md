@@ -35,3 +35,5 @@ Tento dokument slouží jako reference pro AI agenty pracující na projektu **S
     - Řiditelná auta.
     - Interiéry budov (Mizení střechy).
     - Jednoduchá AI (Pronásledování).
+
+tento soubor klidně průběžně doplňujte a upravujte

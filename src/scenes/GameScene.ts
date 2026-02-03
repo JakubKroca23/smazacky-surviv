@@ -4,7 +4,7 @@ import { MapGenerator } from '../core/MapGenerator';
 import { Player } from '../objects/Player';
 import { ZoneSystem } from '../systems/ZoneSystem';
 import { Enemy } from '../objects/enemies/Enemy';
-import { Junkie, Police } from '../objects/enemies/ConcreteEnemies';
+import { Police } from '../objects/enemies/ConcreteEnemies';
 import { Car } from '../objects/vehicles/Car';
 import { Projectile } from '../objects/Projectile';
 import { WeaponFactory } from '../objects/weapons/WeaponFactory';
@@ -32,22 +32,12 @@ export class GameScene extends Phaser.Scene {
 
     create() {
         // Enable Lights
-        this.lights.enable().setAmbientColor(0x101010);
+        this.lights.enable().setAmbientColor(CONFIG.LIGHTING.AMBIENT);
 
         // Generate World
         const mapData = MapGenerator.generateMap(this);
         this.waterColliders = mapData.waterColliders;
-        this.roofs = mapData.roofs; // Store it
-        // Setup Loot interactions
-        if (mapData.lootGroup) {
-            this.setupLootInteractions(mapData.lootGroup);
-
-            // Set pipeline for loot too?
-            mapData.lootGroup.getChildren().forEach((child: any) => {
-                // child is a Sprite likely (Loot extends Sprite?)
-                if (child.setPipeline) child.setPipeline('Light2D');
-            });
-        }
+        this.roofs = mapData.roofs;
 
         // Projectile Group
         this.projectiles = this.physics.add.group({
@@ -67,18 +57,17 @@ export class GameScene extends Phaser.Scene {
         const centerY = (CONFIG.MAP_HEIGHT * CONFIG.TILE_SIZE) / 2;
         this.player = new Player(this, centerX, centerY, this.nickname);
 
-        // Spawn Test Car nearby
-        // Spawn Vehicles (Police & SWAT)
-        // Spawn 1 Police Car near player
+        // Spawn Vehicles
         const policeCar = new Car(this, centerX + 150, centerY, 'vehicle-police');
-        policeCar.setDisplaySize(70, 140); // Scale down PNG
-        policeCar.body!.setSize(60, 120); // Adjust physics body
+        policeCar.setDisplaySize(70, 140);
+        policeCar.body!.setSize(60, 120);
+        policeCar.setPipeline('Light2D');
         this.vehicles.add(policeCar);
 
-        // Spawn 1 SWAT Van
         const swatVan = new Car(this, centerX - 150, centerY + 100, 'vehicle-swat');
-        swatVan.setDisplaySize(80, 160); // Slightly larger
+        swatVan.setDisplaySize(80, 160);
         swatVan.body!.setSize(70, 140);
+        swatVan.setPipeline('Light2D');
         this.vehicles.add(swatVan);
 
         // Enemy Group
@@ -88,68 +77,60 @@ export class GameScene extends Phaser.Scene {
 
         this.spawnEnemies();
 
-        // Colliders
-        // Water is now Overlap (Slow)
-        this.physics.add.overlap(this.player, this.waterColliders, (player: any, _water: any) => {
-            // Apply slow to player
-            player.isInWater = true;
-        });
+        // --- COLLIDERS & OVERLAPS ---
 
-        this.physics.add.overlap(this.enemies, this.waterColliders, (enemy: any, _water: any) => {
-            // Apply slow to enemy
-            enemy.isInWater = true;
-        });
-
-        this.physics.add.collider(this.enemies, this.enemies); // Enemies don't stack
-        this.physics.add.collider(this.player, this.enemies); // Push each other
-        this.physics.add.collider(this.enemies, this.enemies);
-
-        // Building / Roof Logic
-        // We need to handle the roof zones returned by MapGenerator
-        if (mapData.roofZones) {
-            this.physics.add.overlap(this.player, mapData.roofZones, (_player: any, zone: any) => {
-                const roof = zone.getData('roof') as Phaser.GameObjects.Shape;
-                if (roof) {
-                    roof.setData('fadeOut', true);
-                }
-            });
-
-            // We need a way to reset alpha when NOT overlapping.
-            // Arcade Physics doesn't have "exit" event natively for Overlap.
-            // We can check it manually in update() or use a 'touching' flag?
-            // Simplest: Reset all roofs to 1.0 each frame, then apply overlap?
-            // Or use a persistent state.
-
-            // Let's use the 'processCallback' or manual check.
-            // For static groups, we can iterate.
+        // Water (Apply speed reduction)
+        if (this.waterColliders) {
+            this.physics.add.overlap(this.player, this.waterColliders, (p: any) => p.isInWater = true);
+            this.physics.add.overlap(this.enemies, this.waterColliders, (e: any) => e.isInWater = true);
         }
 
-        // Projectile Collisions
-        this.physics.add.overlap(this.projectiles, this.enemies, this.handleProjectileEnemyHit, undefined, this);
-        // Projectiles fly over water? Yes.
-        // this.physics.add.collider(this.projectiles, this.waterColliders, (projectile) => projectile.destroy());
+        // Buildings (Solid Walls)
+        if (mapData.buildings) {
+            this.physics.add.collider(this.player, mapData.buildings);
+            this.physics.add.collider(this.enemies, mapData.buildings);
+            this.physics.add.collider(this.vehicles, mapData.buildings);
+        }
 
-        // Camera
+        // Roof Fading
+        if (mapData.roofZones) {
+            this.physics.add.overlap(this.player, mapData.roofZones, (_p, zone: any) => {
+                const roof = zone.getData('roof');
+                if (roof) roof.setData('fadeOut', true);
+            });
+        }
+
+        // Entities
+        this.physics.add.collider(this.player, this.enemies);
+        this.physics.add.collider(this.enemies, this.enemies);
+
+        // Vehicles
+        this.physics.add.collider(this.player, this.vehicles);
+        this.physics.add.collider(this.enemies, this.vehicles);
+        this.physics.add.collider(this.vehicles, this.vehicles);
+
+        // Loot Interactions
+        if (mapData.lootGroup) {
+            this.setupLootInteractions(mapData.lootGroup);
+            mapData.lootGroup.getChildren().forEach((child: any) => {
+                if (child.setPipeline) child.setPipeline('Light2D');
+            });
+        }
+
+        // Combat
+        this.physics.add.overlap(this.projectiles, this.enemies, this.handleProjectileEnemyHit, undefined, this);
+
+        // Camera Setup
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
         this.cameras.main.setBounds(0, 0, CONFIG.MAP_WIDTH * CONFIG.TILE_SIZE, CONFIG.MAP_HEIGHT * CONFIG.TILE_SIZE);
 
-        // Add Bloom for Cyberpunk Vibe
         if (this.cameras.main.postFX) {
             this.cameras.main.postFX.addBloom(0xffffff, 1, 1, 1.2, 1.0);
         }
 
-        // Input Listener for F (Interaction)
-        // Just a debug log for now
-        this.physics.add.collider(this.vehicles, this.vehicles);
-        this.physics.add.collider(this.player, this.vehicles); // Player collides with car (if not driving)
-        this.physics.add.collider(this.vehicles, this.enemies); // Car pushes enemies
-
-        // Launch UI
+        // Final UI and Inputs
         this.scene.launch('UIScene');
-
-        // Init Zone
         this.zoneSystem = new ZoneSystem(this);
-
         this.setupInput();
     }
 
@@ -226,6 +207,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     update(time: number, delta: number) {
+        console.log(`GameScene Update: time=${time}, delta=${delta}, Player=${!!this.player}`);
         if (this.player) {
             this.player.update(time, delta);
             this.zoneSystem.update(time, delta, this.player);
@@ -252,13 +234,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     private spawnEnemies() {
-        // Spawn 5 Junkies and 3 Police for now
-        for (let i = 0; i < 5; i++) {
-            const pos = this.getRandomSafePosition();
-            const junkie = new Junkie(this, pos.x, pos.y);
-            this.enemies.add(junkie);
-        }
-
+        // Spawn 3 Police for now
         for (let i = 0; i < 3; i++) {
             const pos = this.getRandomSafePosition();
             const police = new Police(this, pos.x, pos.y);

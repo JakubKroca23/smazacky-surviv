@@ -38,8 +38,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         // Enable Lighting on Player
         this.setPipeline('Light2D');
 
-        // Create Flashlight
-        this.flashlight = scene.lights.addLight(x, y, 400, 0xffffff, 2);
+        // Create Flashlight (Spotlight effect)
+        this.flashlight = scene.lights.addLight(
+            x, y,
+            CONFIG.LIGHTING.PLAYER_FLASHLIGHT.RADIUS,
+            CONFIG.LIGHTING.PLAYER_FLASHLIGHT.COLOR,
+            CONFIG.LIGHTING.PLAYER_FLASHLIGHT.INTENSITY
+        );
 
         // Create Nameplate
         this.nameText = scene.add.text(x, y - 50, nickname, { // Raised slightly
@@ -50,8 +55,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             align: 'center'
         }).setOrigin(0.5).setDepth(25); // Higher depth
 
-        // Physics Body Config
-        this.setCircle(16); // Derived from 32x32 texture
+        // Physics Body Config & Visual Scale
+        this.setDisplaySize(64, 64);
+        this.setCircle(24, 4, 4); // Adjust circle to be centered and fit
         this.setDrag(CONFIG.PLAYER_DRAG);
         this.setMaxVelocity(CONFIG.PLAYER_SPEED);
         this.setCollideWorldBounds(true);
@@ -69,6 +75,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.weaponVisual = scene.add.sprite(0, 0, 'weapon-knife');
         this.weaponVisual.setDepth(11);
         this.weaponVisual.setOrigin(0, 0.5); // Pivot at handle (left-center)
+        this.weaponVisual.setPipeline('Light2D');
 
         // Keys for Weapon Switching
         scene.input.keyboard!.on('keydown-ONE', () => this.inventory.switchSlot('primary'));
@@ -88,8 +95,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         // Let's use the 'player' texture but scaled down very small?
         this.leftHand = scene.add.sprite(0, 0, 'player').setScale(0.3).setTint(0xd2b48c); // Skin tone?
         this.leftHand.setDepth(12);
+        this.leftHand.setPipeline('Light2D');
         this.rightHand = scene.add.sprite(0, 0, 'player').setScale(0.3).setTint(0xd2b48c);
         this.rightHand.setDepth(12);
+        this.rightHand.setPipeline('Light2D');
 
         // ... keys ...
     }
@@ -135,8 +144,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (up.isDown) this.setAccelerationY(-acceleration);
         else if (down.isDown) this.setAccelerationY(acceleration);
 
-        if (left.isDown) this.setAccelerationX(-acceleration);
-        else if (right.isDown) this.setAccelerationX(acceleration);
+        if (left.isDown) {
+            console.log('LEFT');
+            this.setAccelerationX(-acceleration);
+        }
+        else if (right.isDown) {
+            console.log('RIGHT');
+            this.setAccelerationX(acceleration);
+        }
     }
 
     private handleRotation() {

@@ -13,15 +13,28 @@ export const CONFIG = {
     ZONE_WAIT_DURATION: 10000, // 10s waiting
 
     COLORS: {
-        GRASS: 0x1a2e1a, // Dark Green
-        WATER: 0x1a2e1a, // Same as grass (water removed visually)
-        ROAD: 0x1a2e1a, // Same as grass
-        WALL: 0x0a140a, // Very dark green/black
-        ROOF: 0x050a05,
-        PLAYER: 0xf1c40f,
+        BACKGROUND: 0x0a0a0a,
+        GRASS: 0x0d120d, // Dark tech ground base
+        WATER: 0x001a1a, // Dark cyan water
+        ROAD: 0x111111,
+        WALL: 0x1a1a1a,
+        ROOF: 0x050505,
+        PLAYER: 0x00fbff, // Neon Cyan
+        UI_NEON_GREEN: 0x00ff00,
+        UI_NEON_PURPLE: 0xff00ff,
         UI_BACKGROUND: 0x000000,
-        NIGHT_OVERLAY: 0x000011,
+        NIGHT_OVERLAY: 0x050505,
         ZONE_SAFE: 0xffffff,
-        ZONE_DANGER: 0x00ff00 // Poison Green
+        ZONE_DANGER: 0x00ff00
+    },
+
+    LIGHTING: {
+        AMBIENT: 0x111111,
+        PLAYER_FLASHLIGHT: {
+            COLOR: 0xffffff,
+            INTENSITY: 1.5,
+            RADIUS: 600
+        },
+        NEON_INTENSITY: 2.0
     }
 };

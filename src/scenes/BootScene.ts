@@ -46,12 +46,10 @@ export class BootScene extends Phaser.Scene {
         this.load.image('env-tree-c', 'assets/env-tree-c.png');
 
         // Enemies
-        this.load.svg('enemy-junkie', 'assets/images/enemies/enemy_junkie.svg');
         this.load.svg('enemy-police', 'assets/images/enemies/enemy_police.svg');
         this.load.svg('enemy-swat', 'assets/images/enemies/enemy_swat.svg');
 
         // Special Weapons
-        this.load.svg('weapon-needle', 'assets/images/weapons/needle.svg');
 
         // Vehicles
         this.load.svg('vehicle-sedan', 'assets/vehicle-sedan.svg'); // Keep old one
@@ -62,6 +60,9 @@ export class BootScene extends Phaser.Scene {
         this.load.image('floor-industrial', 'assets/floor_industrial.png');
         this.load.image('wall-urban', 'assets/wall_urban.png');
         this.load.image('player-survivor', 'assets/player_survivor.png');
+        this.load.image('ui-frame', 'assets/ui_frame.png');
+        this.load.image('light-flare-cyan', 'assets/light_flare_cyan.png');
+        this.load.image('light-flare-purple', 'assets/light_flare_purple.png');
     }
 
     create() {
@@ -108,6 +109,41 @@ export class BootScene extends Phaser.Scene {
             road.fillStyle(CONFIG.COLORS.ROAD);
             road.fillRect(0, 0, CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
             road.generateTexture('road', CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
+        }
+
+        // FALLBACKS for Missing Assets
+        if (!this.textures.exists('player-survivor')) {
+            const p = this.make.graphics({ x: 0, y: 0 });
+            p.fillStyle(CONFIG.COLORS.PLAYER);
+            p.fillCircle(24, 24, 24);
+            p.lineStyle(2, 0x000000);
+            p.strokeCircle(24, 24, 24);
+            p.generateTexture('player-survivor', 48, 48);
+        }
+
+        if (!this.textures.exists('wall-urban')) {
+            const w = this.make.graphics({ x: 0, y: 0 });
+            w.fillStyle(CONFIG.COLORS.WALL);
+            w.fillRect(0, 0, 64, 64);
+            w.lineStyle(2, 0x555555);
+            w.strokeRect(0, 0, 64, 64);
+            w.generateTexture('wall-urban', 64, 64);
+        }
+
+        if (!this.textures.exists('floor-industrial')) {
+            const f = this.make.graphics({ x: 0, y: 0 });
+            f.fillStyle(0x222222);
+            f.fillRect(0, 0, 256, 256);
+
+            // Grid pattern
+            f.lineStyle(2, 0x333333);
+            f.strokeRect(0, 0, 256, 256);
+            f.beginPath();
+            f.moveTo(128, 0); f.lineTo(128, 256);
+            f.moveTo(0, 128); f.lineTo(256, 128);
+            f.strokePath();
+
+            f.generateTexture('floor-industrial', 256, 256);
         }
     }
 }

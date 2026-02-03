@@ -19,25 +19,39 @@ export class UIScene extends Phaser.Scene {
     create() {
         this.mainScene = this.scene.get('GameScene') as GameScene;
 
-        // Background for HUD
-        const graphics = this.add.graphics();
-        graphics.fillStyle(0x000000, 0.5);
-        graphics.fillRect(10, 10, 200, 100);
+        // UI Frame
+        this.add.image(110, 60, 'ui-frame').setDisplaySize(220, 120).setAlpha(0.8);
 
         // Health
-        this.healthText = this.add.text(20, 20, 'Health: 100', { fontSize: '18px', color: '#ffffff' });
+        this.healthText = this.add.text(20, 20, 'HEALTH: 100', {
+            fontSize: '18px',
+            color: '#00ff00',
+            fontFamily: 'Courier New',
+            fontStyle: 'bold'
+        });
 
         // Weapon Info
-        this.weaponText = this.add.text(20, 50, 'Weapon: Knife', { fontSize: '18px', color: '#ffffff' });
+        this.weaponText = this.add.text(20, 50, 'WEAPON: KNIFE', {
+            fontSize: '18px',
+            color: '#00ff00',
+            fontFamily: 'Courier New'
+        });
 
         // Ammo
-        this.ammoText = this.add.text(20, 80, 'Ammo: -/-', { fontSize: '18px', color: '#ffffff' });
+        this.ammoText = this.add.text(20, 80, 'AMMO: -/-', {
+            fontSize: '18px',
+            color: '#00fbff',
+            fontFamily: 'Courier New'
+        });
 
         // Zone Status
-        this.zoneText = this.add.text(window.innerWidth / 2, 50, 'Zone Waiting', {
-            fontSize: '24px',
-            color: '#ff0000',
-            align: 'center'
+        this.zoneText = this.add.text(window.innerWidth / 2, 50, 'ZONE ACTIVE', {
+            fontSize: '28px',
+            color: '#ff00ff',
+            fontFamily: 'Courier New',
+            fontStyle: 'bold',
+            stroke: '#000000',
+            strokeThickness: 4
         });
         this.zoneText.setOrigin(0.5);
 
@@ -46,18 +60,18 @@ export class UIScene extends Phaser.Scene {
     }
 
     private createInventorySlots() {
-        this.backpackContainer = this.add.container(window.innerWidth / 2, window.innerHeight - 50);
-        const slotSize = 50;
-        const padding = 10;
+        this.backpackContainer = this.add.container(window.innerWidth / 2, window.innerHeight - 80);
+        const slotSize = 60;
+        const padding = 15;
         const totalWidth = (slotSize * 5) + (padding * 4);
         const startX = -(totalWidth / 2) + (slotSize / 2);
 
         for (let i = 0; i < 5; i++) {
             const x = startX + i * (slotSize + padding);
 
-            // Slot Background
-            const bg = this.add.rectangle(x, 0, slotSize, slotSize, 0x000000, 0.5);
-            bg.setStrokeStyle(2, 0x555555);
+            // Slot Background (Holographic feel)
+            const bg = this.add.rectangle(x, 0, slotSize, slotSize, 0x000000, 0.7);
+            bg.setStrokeStyle(2, 0x00ff00);
 
             // Icon (Placeholder empty)
             const icon = this.add.image(x, 0, 'loot-medkit').setVisible(false).setDisplaySize(32, 32);
@@ -111,11 +125,11 @@ export class UIScene extends Phaser.Scene {
                 // we stored 'loot-medkit' etc. in item.icon
                 slot.icon.setTexture(item.icon);
                 slot.text.setText(item.amount > 1 ? item.amount.toString() : '');
-                slot.bg.setStrokeStyle(2, 0xffff00); // Highlight filled
+                slot.bg.setStrokeStyle(2, 0xff00ff); // Neon Purple filled
             } else {
                 slot.icon.setVisible(false);
                 slot.text.setText('');
-                slot.bg.setStrokeStyle(2, 0x555555); // Empty
+                slot.bg.setStrokeStyle(2, 0x00ff00); // Neon Green empty
             }
         }
     }

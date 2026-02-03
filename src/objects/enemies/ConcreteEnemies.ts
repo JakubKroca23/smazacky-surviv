@@ -2,59 +2,6 @@ import { Enemy, EnemyState } from './Enemy';
 import { WeaponFactory } from '../weapons/WeaponFactory';
 import { Player } from '../Player';
 
-export class Junkie extends Enemy {
-    constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y, 'enemy-junkie', 50, 500); // 50 HP, 500 Speed
-
-        // Equip Needle
-        this.weapon = WeaponFactory.createNeedle(scene);
-    }
-
-    protected attack(target: Player): void {
-        const time = this.scene.time.now;
-        // Melee attack logic using weapon
-        if (this.weapon && this.weapon.canFire(time)) {
-            this.weapon.shoot(this, target.x, target.y);
-            // Since needle is projectile-based now, this works.
-            // If melee was instant, we'd use physics overlap, but Needle is set as projectile weapon.
-        }
-    }
-
-    protected updateState(_time: number, delta: number) {
-        if (!this.target) return;
-
-        const dist = Phaser.Math.Distance.Between(this.x, this.y, this.target.x, this.target.y);
-
-        if (dist < 500) {
-            this.aiState = EnemyState.CHASE;
-        } else {
-            this.aiState = EnemyState.WANDER;
-        }
-
-        switch (this.aiState) {
-            case EnemyState.CHASE:
-                this.scene.physics.moveToObject(this, this.target, this.speed);
-                this.setRotation(Phaser.Math.Angle.Between(this.x, this.y, this.target.x, this.target.y));
-
-                // Attack if close
-                if (dist < 60) {
-                    this.attack(this.target);
-                }
-                break;
-
-            case EnemyState.WANDER:
-                this.stateTimer -= delta;
-                if (this.stateTimer <= 0) {
-                    this.stateTimer = 1000;
-                    const angle = Math.random() * Math.PI * 2;
-                    this.setVelocity(Math.cos(angle) * this.speed, Math.sin(angle) * this.speed);
-                    this.setRotation(angle);
-                }
-                break;
-        }
-    }
-}
-
 export class Police extends Enemy {
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, 'enemy-police', 100, 400); // 100 HP, 400 Speed

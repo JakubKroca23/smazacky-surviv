@@ -17,6 +17,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
+        this.setPipeline('Light2D');
 
         this.damage = damage;
         this.maxDistance = maxDistance;
