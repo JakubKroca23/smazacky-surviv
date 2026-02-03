@@ -94,7 +94,7 @@ export class SWAT extends Enemy {
 
 export class Junkie extends Enemy {
     constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y, 'enemy-junky', 60, 450); // Fast but fragile
+        super(scene, x, y, 'enemy-junky', 60, 350); // Fast but fragile, slowed to 350
     }
 
     protected attack(target: Player): void {

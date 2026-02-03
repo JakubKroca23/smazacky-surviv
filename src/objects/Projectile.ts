@@ -10,6 +10,8 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
     public poisonEffect?: { duration: number, damage: number, interval: number };
     public dropOnMiss?: string; // Item key
 
+    private light?: Phaser.GameObjects.Light;
+
     constructor(scene: Phaser.Scene, x: number, y: number, angle: number, damage: number, speed: number, maxDistance: number) {
         super(scene, x, y, 'projectile'); // Default texture, override later if needed?
         // Or we can pass texture to constructor. 
@@ -18,18 +20,34 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.setPipeline('Light2D');
+        this.setDepth(50); // High depth
 
         this.damage = damage;
         this.maxDistance = maxDistance;
         this.startX = x;
         this.startY = y;
 
+        // Visual Light (Small glow for bullets)
+        this.light = scene.lights.addLight(x, y, 100, 0xffff00, 2);
+
         // Physics setup
+        this.fire(speed, angle);
+    }
+
+    public fire(speed: number, angle: number) {
+        if (!this.body) return;
         this.setRotation(angle);
-        this.scene.physics.velocityFromRotation(angle, speed, this.body!.velocity);
+        this.scene.physics.velocityFromRotation(angle, speed, this.body.velocity);
+        this.body.enable = true;
     }
 
     update() {
+        // Update light position
+        if (this.light) {
+            this.light.x = this.x;
+            this.light.y = this.y;
+        }
+
         // Destroy if travel max distance
         const distanceTravelled = Phaser.Math.Distance.Between(this.startX, this.startY, this.x, this.y);
 
@@ -39,6 +57,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
     }
 
     private handleMiss() {
+        if (this.light) this.scene.lights.removeLight(this.light);
         if (this.dropOnMiss) {
             // Spawn item
             // For now, let's just create a sprite that acts as "dropped item"
@@ -58,5 +77,10 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
 
     public getDamage(): number {
         return this.damage;
+    }
+
+    destroy(fromScene?: boolean) {
+        if (this.light) this.scene.lights.removeLight(this.light);
+        super.destroy(fromScene);
     }
 }

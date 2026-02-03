@@ -52,6 +52,7 @@ export class RangedWeapon extends Weapon {
         // Add to projectiles group if it exists (Generic check to avoid circular dep)
         if ((this.scene as any).projectiles) {
             (this.scene as any).projectiles.add(proj);
+            proj.fire(speed, finalAngle); // Re-fire to ensure group addition didn't reset velocity
         }
 
         // TODO: Play Sound
