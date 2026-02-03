@@ -1,0 +1,36 @@
+<svg width="128" height="32" viewBox="0 0 128 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="barrel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#444;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#222;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#111;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="wood" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#654321;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3e2b14;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Stock -->
+  <path d="M4 12 L 28 10 L 28 20 L 4 24 Z" fill="#111" stroke="#000" /> 
+
+  <!-- Receiver -->
+  <rect x="28" y="8" width="30" height="10" fill="#333" stroke="#000" />
+  <rect x="35" y="10" width="16" height="4" fill="#111" rx="2" /> <!-- Ejection port -->
+
+  <!-- Barrel -->
+  <rect x="58" y="8" width="60" height="6" fill="url(#barrel)" />
+  
+  <!-- Magazine Tube -->
+  <rect x="58" y="16" width="50" height="4" fill="#222" />
+
+  <!-- Pump (Wood) -->
+  <rect x="65" y="15" width="20" height="8" rx="2" fill="url(#wood)" stroke="#2b1a0a" />
+  <line x1="68" y1="15" x2="68" y2="23" stroke="#3e2b14" stroke-width="1" />
+  <line x1="72" y1="15" x2="72" y2="23" stroke="#3e2b14" stroke-width="1" />
+  <line x1="76" y1="15" x2="76" y2="23" stroke="#3e2b14" stroke-width="1" />
+  <line x1="80" y1="15" x2="80" y2="23" stroke="#3e2b14" stroke-width="1" />
+
+  <!-- Grip -->
+  <path d="M28 18 L 26 28 L 34 28 L 36 18 Z" fill="#111" />
+</svg>

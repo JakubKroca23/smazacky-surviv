@@ -1,0 +1,8 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <rect x="2" y="2" width="60" height="60" fill="#d35400" stroke="#a04000" stroke-width="2" />
+  <!-- Frame -->
+  <rect x="4" y="4" width="56" height="56" fill="none" stroke="#e67e22" stroke-width="4" />
+  <!-- Cross -->
+  <line x1="4" y1="4" x2="60" y2="60" stroke="#e67e22" stroke-width="4" />
+  <line x1="60" y1="4" x2="4" y2="60" stroke="#e67e22" stroke-width="4" />
+</svg>

@@ -11,7 +11,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         right: Phaser.Input.Keyboard.Key;
         interact: Phaser.Input.Keyboard.Key;
     };
-    private weaponVisual: Phaser.GameObjects.Rectangle;
+    private weaponVisual: Phaser.GameObjects.Sprite;
     public inventory: InventoryManager;
     public health: number = 100;
     public maxHealth: number = 100;
@@ -44,9 +44,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             interact: Phaser.Input.Keyboard.KeyCodes.F
         }) as any;
 
-        // Weapon Visual
-        this.weaponVisual = scene.add.rectangle(0, 0, 24, 8, 0x000000);
+        // Weapon Visual (Sprite)
+        this.weaponVisual = scene.add.sprite(0, 0, 'weapon-knife');
         this.weaponVisual.setDepth(11);
+        this.weaponVisual.setOrigin(0, 0.5); // Pivot at handle (left-center)
 
         // Keys for Weapon Switching
         scene.input.keyboard!.on('keydown-ONE', () => this.inventory.switchSlot('primary'));
@@ -62,6 +63,27 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.handleMovement();
         this.handleRotation();
         this.handleShooting();
+        this.updateWeaponVisual();
+    }
+
+    private updateWeaponVisual() {
+        const weapon = this.inventory.getActiveWeapon();
+        if (weapon) {
+            this.weaponVisual.setVisible(true);
+            // Map weapon name to texture
+            let texture = 'weapon-knife';
+            const name = weapon.stats.name.toLowerCase();
+            if (name.includes('ak')) texture = 'weapon-ak47';
+            else if (name.includes('glock')) texture = 'weapon-glock';
+            else if (name.includes('shotgun')) texture = 'weapon-shotgun';
+            else if (name.includes('knife')) texture = 'weapon-knife';
+
+            if (this.weaponVisual.texture.key !== texture) {
+                this.weaponVisual.setTexture(texture);
+            }
+        } else {
+            this.weaponVisual.setVisible(false);
+        }
     }
 
     private handleMovement() {
@@ -103,15 +125,61 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.weaponVisual.x = this.x + Math.cos(angle) * weaponOffset;
         this.weaponVisual.y = this.y + Math.sin(angle) * weaponOffset;
         this.weaponVisual.setRotation(angle);
+
+        // Flip weapon if pointing left so it's not upside down
+        if (Math.abs(angle) > Math.PI / 2) {
+            this.weaponVisual.setFlipY(true);
+        } else {
+            this.weaponVisual.setFlipY(false);
+        }
     }
 
-    private handleShooting() {
-        const pointer = this.scene.input.activePointer;
-        if (pointer.isDown) {
-            const weapon = this.inventory.getActiveWeapon();
-            if (weapon) {
-                weapon.shoot(this, pointer.worldX, pointer.worldY);
+
+
+    private playAttackAnimation(weaponName: string) {
+        // Simple tween animation based on weapon type
+        const name = weaponName.toLowerCase();
+
+        if (name.includes('knife')) {
+            // Stab animation
+            this.scene.tweens.add({
+                targets: this.weaponVisual,
+                x: this.weaponVisual.x + Math.cos(this.rotation) * 20,
+                y: this.weaponVisual.y + Math.sin(this.rotation) * 20,
+                duration: 100,
+                yoyo: true,
+                ease: 'Power1'
+            });
+        } else {
+            // Recoil animation for guns
+            this.scene.tweens.add({
+                targets: this.weaponVisual,
+                x: this.weaponVisual.x - Math.cos(this.rotation) * 5,
+                y: this.weaponVisual.y - Math.sin(this.rotation) * 5,
+                duration: 50,
+                yoyo: true,
+                ease: 'Quad.out'
+            });
+        }
+    }
+
+    private updateWeaponVisual() {
+        const weapon = this.inventory.getActiveWeapon();
+        if (weapon) {
+            this.weaponVisual.setVisible(true);
+            // Map weapon name to texture
+            let texture = 'weapon-knife';
+            const name = weapon.stats.name.toLowerCase();
+            if (name.includes('ak')) texture = 'weapon-ak47';
+            else if (name.includes('glock')) texture = 'weapon-glock';
+            else if (name.includes('shotgun')) texture = 'weapon-shotgun';
+            else if (name.includes('knife')) texture = 'weapon-knife';
+
+            if (this.weaponVisual.texture.key !== texture) {
+                this.weaponVisual.setTexture(texture);
             }
+        } else {
+            this.weaponVisual.setVisible(false);
         }
     }
 

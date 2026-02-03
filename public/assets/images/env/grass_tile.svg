@@ -1,0 +1,16 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" fill="#1a2e1a" />
+  <!-- Tuft 1 -->
+  <path d="M20 80 Q 25 60 15 50" stroke="#254225" stroke-width="2" fill="none" />
+  <path d="M20 80 Q 25 60 25 50" stroke="#254225" stroke-width="2" fill="none" />
+  <path d="M20 80 Q 25 60 30 55" stroke="#254225" stroke-width="2" fill="none" />
+  
+  <!-- Tuft 2 -->
+  <path d="M70 30 Q 75 10 65 5" stroke="#254225" stroke-width="2" fill="none" />
+  <path d="M70 30 Q 75 10 80 5" stroke="#254225" stroke-width="2" fill="none" />
+  
+  <!-- Random specs -->
+  <circle cx="50" cy="50" r="2" fill="#254225" opacity="0.5" />
+  <circle cx="10" cy="10" r="1.5" fill="#254225" opacity="0.5" />
+  <circle cx="90" cy="80" r="2" fill="#254225" opacity="0.5" />
+</svg>

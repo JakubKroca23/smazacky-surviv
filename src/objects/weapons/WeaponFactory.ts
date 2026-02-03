@@ -33,6 +33,21 @@ export class WeaponFactory {
         });
     }
 
+    static createShotgun(scene: Phaser.Scene): Weapon {
+        return new RangedWeapon(scene, {
+            name: 'Shotgun',
+            damage: 20, // Per pellet
+            range: 300,
+            fireRate: 1000,
+            ammoType: 'shell',
+            magazineSize: 6,
+            maxAmmo: 24,
+            reloadTime: 3000,
+            spread: 15,
+            isAutomatic: false
+        });
+    }
+
     static createKnife(scene: Phaser.Scene): Weapon {
         return new MeleeWeapon(scene, {
             name: 'Knife',

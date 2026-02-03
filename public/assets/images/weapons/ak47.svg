@@ -1,0 +1,39 @@
+<svg width="128" height="48" viewBox="0 0 128 48" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wood" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5a2b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#5a3a1a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="metal" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#555;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#333;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#222;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="mag" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#d45500;stop-opacity:1" /> <!-- Bakelite mag -->
+      <stop offset="100%" style="stop-color:#a04000;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Stock -->
+  <path d="M4 16 L 30 12 L 30 24 L 4 28 Z" fill="url(#wood)" stroke="#2b1a0a" stroke-width="1" />
+  
+  <!-- Receiver -->
+  <rect x="30" y="10" width="40" height="12" fill="url(#metal)" stroke="#000" stroke-width="1" />
+  <rect x="30" y="10" width="40" height="4" fill="#111" opacity="0.5" /> <!-- Top cover -->
+
+  <!-- Handguard -->
+  <rect x="70" y="12" width="20" height="8" fill="url(#wood)" stroke="#2b1a0a" stroke-width="1" />
+  <rect x="70" y="12" width="20" height="4" fill="#6b4220" /> <!-- Upper handguard -->
+
+  <!-- Barrel -->
+  <rect x="90" y="14" width="28" height="4" fill="#222" />
+  <rect x="110" y="12" width="4" height="8" fill="#111" /> <!-- Gas block -->
+  <rect x="118" y="13" width="6" height="6" fill="#111" /> <!-- Front Sight -->
+
+  <!-- Magazine (Curved) -->
+  <path d="M45 22 Q 55 40 40 44 L 32 42 Q 45 38 38 22 Z" fill="url(#mag)" stroke="#502000" stroke-width="1" />
+
+  <!-- Grip -->
+  <path d="M32 22 L 30 36 L 40 36 L 38 22 Z" fill="url(#wood)" stroke="#2b1a0a" stroke-width="1" />
+</svg>

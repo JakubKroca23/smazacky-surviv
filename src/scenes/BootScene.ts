@@ -7,7 +7,23 @@ export class BootScene extends Phaser.Scene {
     }
 
     preload() {
-        // Here we can load external assets if needed
+        // Weapons
+        this.load.svg('weapon-glock', 'assets/images/weapons/glock.svg');
+        this.load.svg('weapon-ak47', 'assets/images/weapons/ak47.svg');
+        this.load.svg('weapon-shotgun', 'assets/images/weapons/shotgun.svg');
+        this.load.svg('weapon-knife', 'assets/images/weapons/knife.svg');
+
+        // Loot
+        this.load.svg('loot-ammo-9mm', 'assets/images/loot/ammo_9mm.svg');
+        this.load.svg('loot-ammo-762', 'assets/images/loot/ammo_762.svg');
+        this.load.svg('loot-ammo-shell', 'assets/images/loot/ammo_shell.svg');
+        this.load.svg('loot-medkit', 'assets/images/loot/medkit.svg');
+
+        // Environment
+        this.load.svg('grass', 'assets/images/env/grass_tile.svg');
+        this.load.svg('env-tree', 'assets/images/env/tree.svg');
+        this.load.svg('env-rock', 'assets/images/env/rock.svg');
+        this.load.svg('env-crate', 'assets/images/env/crate.svg');
     }
 
     create() {
@@ -16,64 +32,44 @@ export class BootScene extends Phaser.Scene {
     }
 
     private generateTextures() {
-        // GRASS TILE
-        const grass = this.make.graphics({ x: 0, y: 0 });
-        grass.fillStyle(CONFIG.COLORS.GRASS);
-        grass.fillRect(0, 0, CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
-        // Add random noise
-        grass.fillStyle(0x1a451e);
-        for (let i = 0; i < 20; i++) {
-            const x = Math.random() * CONFIG.TILE_SIZE;
-            const y = Math.random() * CONFIG.TILE_SIZE;
-            const size = Math.random() * 5 + 2;
-            grass.fillCircle(x, y, size);
-        }
-        grass.generateTexture('grass', CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
-
-        // WATER TILE
-        const water = this.make.graphics({ x: 0, y: 0 });
-        water.fillStyle(CONFIG.COLORS.WATER);
-        water.fillRect(0, 0, CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
-        water.fillStyle(0xffffff, 0.2); // Reflections
-        for (let i = 0; i < 5; i++) {
-            const x = Math.random() * CONFIG.TILE_SIZE;
-            const y = Math.random() * CONFIG.TILE_SIZE;
-            water.fillRect(x, y, 20, 4);
-        }
-        water.generateTexture('water', CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
-
-        // ROAD TILE
-        const road = this.make.graphics({ x: 0, y: 0 });
-        road.fillStyle(CONFIG.COLORS.ROAD);
-        road.fillRect(0, 0, CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
-        road.generateTexture('road', CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
-
-        // PLAYER
+        // PLAYER (Procedural for now)
         const player = this.make.graphics({ x: 0, y: 0 });
         player.fillStyle(CONFIG.COLORS.PLAYER);
-        player.fillCircle(16, 16, 16);
+        player.fillCircle(24, 24, 24);
         player.lineStyle(2, 0x000000);
-        player.strokeCircle(16, 16, 16);
-        player.generateTexture('player', 32, 32);
+        player.strokeCircle(24, 24, 24);
+        player.generateTexture('player', 48, 48);
 
-        // WEAPON (Generic Rectangle)
-        const weapon = this.make.graphics({ x: 0, y: 0 });
-        weapon.fillStyle(0x000000);
-        weapon.fillRect(0, 0, 24, 8);
-        weapon.generateTexture('weapon_texture', 24, 8);
-
-        // PROJECTILE
+        // PROJECTILE (Procedural)
         const packet = this.make.graphics({ x: 0, y: 0 });
         packet.fillStyle(0xffff00);
         packet.fillCircle(4, 4, 4);
         packet.generateTexture('projectile', 8, 8);
 
-        // WALL
+        // WALL (Procedural for Map bounds)
         const wall = this.make.graphics({ x: 0, y: 0 });
         wall.fillStyle(CONFIG.COLORS.WALL);
         wall.fillRect(0, 0, CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
-        wall.lineStyle(4, 0x000000);
-        wall.strokeRect(0, 0, CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
         wall.generateTexture('wall', CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
+
+        // Note: 'grass', 'water', 'road' are now loaded assets or mapped to grass
+        // We might need to handle water/road keys if MapGenerator uses them
+        // MapGenerator uses 'grass', 'water', 'road'. 
+        // We loaded 'grass'. We need 'water' and 'road' to avoid crash.
+        // Let's alias them to grass for now to keep the "Dark Green" aesthetic simplified.
+        if (!this.textures.exists('water')) {
+            // Create invisible or duplicate texture for logic compatibility
+            const water = this.make.graphics({ x: 0, y: 0 });
+            water.fillStyle(CONFIG.COLORS.WATER);
+            water.fillRect(0, 0, CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
+            water.generateTexture('water', CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
+        }
+
+        if (!this.textures.exists('road')) {
+            const road = this.make.graphics({ x: 0, y: 0 });
+            road.fillStyle(CONFIG.COLORS.ROAD);
+            road.fillRect(0, 0, CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
+            road.generateTexture('road', CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
+        }
     }
 }
