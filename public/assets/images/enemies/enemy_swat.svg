@@ -1,0 +1,13 @@
+<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  <!-- Body (Black Armor) -->
+  <circle cx="24" cy="24" r="22" fill="#2c3e50" stroke="#000" stroke-width="2"/>
+  <!-- Tactical Vest (Dark Grey) -->
+  <rect x="14" y="6" width="20" height="36" rx="5" fill="#34495e" />
+  <!-- Shoulders (Armored) -->
+  <circle cx="8" cy="24" r="7" fill="#1a252f" stroke="#000" stroke-width="1"/>
+  <circle cx="40" cy="24" r="7" fill="#1a252f" stroke="#000" stroke-width="1"/>
+  <!-- Helmet -->
+  <circle cx="24" cy="24" r="12" fill="#000" />
+  <!-- Goggles -->
+  <rect x="18" y="16" width="12" height="4" fill="#333" stroke="#555" rx="1"/>
+</svg>

@@ -21,14 +21,44 @@ export class BootScene extends Phaser.Scene {
 
         // Environment
         this.load.svg('grass', 'assets/images/env/grass_tile.svg');
+        this.load.svg('water', 'assets/images/env/water_tile.svg');
+        this.load.svg('water-edge-top', 'assets/images/env/water_edge_top.svg');
+        this.load.svg('water-edge-bottom', 'assets/images/env/water_edge_bottom.svg');
+        this.load.svg('water-edge-left', 'assets/images/env/water_edge_left.svg');
+        this.load.svg('water-edge-right', 'assets/images/env/water_edge_right.svg');
         this.load.svg('env-tree', 'assets/images/env/tree.svg');
         this.load.svg('env-rock', 'assets/images/env/rock.svg');
         this.load.svg('env-crate', 'assets/images/env/crate.svg');
+        // Wait, previous loads were 'assets/images/env/...'.
+        // My write_to_file was 'public/assets/...'.
+        // Vite accesses public root as /. 
+        // If previous code used 'assets/images/env/', it implies public/assets/images/env/.
+        // I saved to 'public/assets/'.  I should probably move them or adjust the load path.
+        // Let's adjust load path to match where I saved them: 'assets/' relative to public.
+
+        // New Assets (Root Assets Folder)
+        this.load.svg('env-rock-small', 'assets/env-rock-small.svg');
+        this.load.svg('env-rock-med', 'assets/env-rock-med.svg');
+        this.load.svg('env-rock-large', 'assets/env-rock-large.svg');
+        this.load.svg('env-tree-a', 'assets/env-tree-a.svg');
+        this.load.svg('env-tree-b', 'assets/env-tree-b.svg');
+        this.load.svg('env-tree-c', 'assets/env-tree-c.svg');
+
+        // Enemies
+        this.load.svg('enemy-junkie', 'assets/images/enemies/enemy_junkie.svg');
+        this.load.svg('enemy-police', 'assets/images/enemies/enemy_police.svg');
+        this.load.svg('enemy-swat', 'assets/images/enemies/enemy_swat.svg');
+
+        // Special Weapons
+        this.load.svg('weapon-needle', 'assets/images/weapons/needle.svg');
+
+        // Vehicles
+        this.load.svg('vehicle-sedan', 'assets/vehicle-sedan.svg');
     }
 
     create() {
         this.generateTextures();
-        this.scene.start('MainScene');
+        this.scene.start('LobbyScene');
     }
 
     private generateTextures() {
@@ -46,11 +76,11 @@ export class BootScene extends Phaser.Scene {
         packet.fillCircle(4, 4, 4);
         packet.generateTexture('projectile', 8, 8);
 
-        // WALL (Procedural for Map bounds)
+        // WALL (Procedural for Map bounds and Buildings)
         const wall = this.make.graphics({ x: 0, y: 0 });
-        wall.fillStyle(CONFIG.COLORS.WALL);
-        wall.fillRect(0, 0, CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
-        wall.generateTexture('wall', CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
+        wall.fillStyle(0x000000); // Black walls
+        wall.fillRect(0, 0, 64, 64);
+        wall.generateTexture('wall', 64, 64);
 
         // Note: 'grass', 'water', 'road' are now loaded assets or mapped to grass
         // We might need to handle water/road keys if MapGenerator uses them

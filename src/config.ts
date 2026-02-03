@@ -2,7 +2,7 @@ export const CONFIG = {
     TILE_SIZE: 100,
     MAP_WIDTH: 50,
     MAP_HEIGHT: 50,
-    PLAYER_SPEED: 300,
+    PLAYER_SPEED: 350,
     PLAYER_DRAG: 800, // Friction/Inertia
     DAY_DURATION: 60000, // 60s Day
     NIGHT_DURATION: 60000, // 60s Night

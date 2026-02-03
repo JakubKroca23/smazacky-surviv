@@ -1,0 +1,12 @@
+<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  <!-- Body (Blue Uniform) -->
+  <circle cx="24" cy="24" r="22" fill="#3498db" stroke="#2c3e50" stroke-width="2"/>
+  <!-- Shoulders -->
+  <circle cx="8" cy="24" r="6" fill="#3498db" stroke="#2c3e50" stroke-width="1"/>
+  <circle cx="40" cy="24" r="6" fill="#3498db" stroke="#2c3e50" stroke-width="1"/>
+  <!-- Cap (Dark Blue) -->
+  <rect x="18" y="14" width="12" height="6" fill="#2c3e50" rx="2" /> <!-- Visor -->
+  <circle cx="24" cy="24" r="11" fill="#2c3e50" />
+  <!-- Badge (Gold) -->
+  <path d="M22 24 L24 20 L26 24 L24 28 Z" fill="#f1c40f" />
+</svg>

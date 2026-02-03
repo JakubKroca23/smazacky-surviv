@@ -1,0 +1,16 @@
+<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  <!-- Body (Skinny, sickly green/pale) -->
+  <circle cx="24" cy="24" r="22" fill="#a8d5ba" stroke="#555" stroke-width="2"/>
+  <!-- Tank Top (Dirty white) -->
+  <circle cx="24" cy="24" r="16" fill="#f0f0f0" opacity="0.8" />
+  <!-- Shoulders -->
+  <circle cx="10" cy="24" r="6" fill="#a8d5ba" stroke="#555" stroke-width="1"/>
+  <circle cx="38" cy="24" r="6" fill="#a8d5ba" stroke="#555" stroke-width="1"/>
+  <!-- Head/Hair (Messy) -->
+  <circle cx="24" cy="24" r="10" fill="#a8d5ba" />
+  <!-- Eyes (Red/Crazy) -->
+  <circle cx="20" cy="20" r="2" fill="#ff0000" />
+  <circle cx="28" cy="20" r="2" fill="#ff0000" />
+  <!-- Mouth (Grin) -->
+  <path d="M20 28 Q 24 32 28 28" stroke="#333" stroke-width="1" fill="none" />
+</svg>

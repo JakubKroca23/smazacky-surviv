@@ -1,19 +1,20 @@
 import Phaser from 'phaser';
-import { MainScene } from './MainScene';
+import { GameScene } from './GameScene';
 
 export class UIScene extends Phaser.Scene {
     private healthText!: Phaser.GameObjects.Text;
     private ammoText!: Phaser.GameObjects.Text;
     private weaponText!: Phaser.GameObjects.Text;
     private zoneText!: Phaser.GameObjects.Text;
-    private mainScene!: MainScene;
+    private backpackText!: Phaser.GameObjects.Text;
+    private mainScene!: GameScene;
 
     constructor() {
         super('UIScene');
     }
 
     create() {
-        this.mainScene = this.scene.get('MainScene') as MainScene;
+        this.mainScene = this.scene.get('GameScene') as GameScene;
 
         // Background for HUD
         const graphics = this.add.graphics();
@@ -61,10 +62,24 @@ export class UIScene extends Phaser.Scene {
         }
 
         // Zone Info
-        const zone = this.mainScene.zoneSystem;
-        if (zone) {
-            const timeLeft = Math.ceil(zone.getPhaseTimeLeft() / 1000);
+        const zoneSystem = this.mainScene.zoneSystem;
+        if (zoneSystem) {
+            const timeLeft = Math.ceil(zoneSystem.getPhaseTimeLeft() / 1000);
             this.zoneText.setText(`Zone: ${timeLeft}s`);
         }
+
+        // Inventory Slots (Simple Text for now)
+        let slotText = "Backpack: ";
+        if (player.inventory.backpack) {
+            player.inventory.backpack.forEach((item: any) => {
+                slotText += `[${item.type} x${item.amount}] `;
+            });
+        }
+
+        // We need a text object for this.
+        if (!this.backpackText) {
+            this.backpackText = this.add.text(window.innerWidth / 2, window.innerHeight - 40, '', { fontSize: '16px', color: '#fff' }).setOrigin(0.5);
+        }
+        this.backpackText.setText(slotText);
     }
 }

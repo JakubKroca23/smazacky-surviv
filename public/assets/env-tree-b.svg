@@ -1,0 +1,33 @@
+<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="shadowB" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dx="5" dy="5" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.4"/>
+      </feComponentTransfer>
+      <feMerge> 
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/> 
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Large Trunk Base -->
+  <circle cx="96" cy="96" r="24" fill="#3E2723" stroke="#281A16" stroke-width="3"/>
+
+  <!-- Crown (Cloud/Bushy style) -->
+  <g filter="url(#shadowB)">
+    <!-- Base Cluster -->
+    <circle cx="60" cy="90" r="40" fill="rgba(51, 105, 30, 0.9)"/>
+    <circle cx="130" cy="90" r="40" fill="rgba(51, 105, 30, 0.9)"/>
+    <circle cx="96" cy="60" r="45" fill="rgba(51, 105, 30, 0.9)"/>
+    <circle cx="96" cy="130" r="40" fill="rgba(51, 105, 30, 0.9)"/>
+    <circle cx="96" cy="96" r="50" fill="rgba(51, 105, 30, 0.9)"/>
+
+    <!-- Highlights -->
+    <circle cx="80" cy="80" r="30" fill="rgba(85, 139, 47, 0.8)"/>
+    <circle cx="112" cy="110" r="25" fill="rgba(85, 139, 47, 0.8)"/>
+    <circle cx="110" cy="70" r="20" fill="rgba(100, 221, 23, 0.6)"/>
+  </g>
+</svg>

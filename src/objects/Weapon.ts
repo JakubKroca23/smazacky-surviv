@@ -13,6 +13,11 @@ export interface WeaponStats {
     reloadTime: number;
     spread: number; // Angle variance in degrees
     isAutomatic: boolean;
+    projectileProps?: {
+        poison?: { duration: number, damage: number, interval: number };
+        dropOnMiss?: string;
+        speed?: number; // Override default speed
+    };
 }
 
 export abstract class Weapon {
@@ -37,6 +42,8 @@ export abstract class Weapon {
             time > this.lastFiredTime + this.stats.fireRate
         );
     }
+
+    update(_time: number, _delta: number) { }
 
     abstract shoot(shooter: Phaser.GameObjects.Sprite, targetX: number, targetY: number): void;
 
