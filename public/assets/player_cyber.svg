@@ -1,0 +1,21 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Torso -->
+  <circle cx="32" cy="32" r="22" fill="#111" stroke="#00fbff" stroke-width="2" />
+  <!-- Shoulders -->
+  <ellipse cx="32" cy="32" rx="26" ry="18" fill="none" stroke="#00fbff" stroke-width="1" opacity="0.5" />
+  <!-- Head -->
+  <circle cx="32" cy="32" r="12" fill="#000" stroke="#00fbff" stroke-width="1.5" />
+  <!-- Cyber Visor -->
+  <rect x="25" y="29" width="14" height="3" rx="1" fill="#00fbff" filter="url(#glow)" />
+  <!-- Tech Details on back -->
+  <rect x="30" y="44" width="4" height="6" fill="#00fbff" opacity="0.8" />
+</svg>

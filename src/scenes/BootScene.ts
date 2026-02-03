@@ -46,8 +46,9 @@ export class BootScene extends Phaser.Scene {
         this.load.image('env-tree-c', 'assets/env-tree-c.png');
 
         // Enemies
-        this.load.svg('enemy-police', 'assets/images/enemies/enemy_police.svg');
-        this.load.svg('enemy-swat', 'assets/images/enemies/enemy_swat.svg');
+        this.load.svg('enemy-police-cyber', 'assets/enemy_police_cyber.svg');
+        this.load.svg('enemy-junky', 'assets/enemy_junky.svg');
+        this.load.svg('enemy-swat-cyber', 'assets/enemy_police_cyber.svg'); // Reuse or specific?
 
         // Special Weapons
 
@@ -59,7 +60,7 @@ export class BootScene extends Phaser.Scene {
         // NEW ASSETS (Visual Overhaul)
         this.load.image('floor-industrial', 'assets/floor_industrial.png');
         this.load.image('wall-urban', 'assets/wall_urban.png');
-        this.load.image('player-survivor', 'assets/player_survivor.png');
+        this.load.svg('player-cyber', 'assets/player_cyber.svg');
         this.load.image('ui-frame', 'assets/ui_frame.png');
         this.load.image('light-flare-cyan', 'assets/light_flare_cyan.png');
         this.load.image('light-flare-purple', 'assets/light_flare_purple.png');

@@ -1,0 +1,15 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Armor -->
+  <circle cx="32" cy="32" r="24" fill="#001a33" stroke="#0088ff" stroke-width="3" />
+  <!-- Helmet -->
+  <circle cx="32" cy="32" r="14" fill="#000" stroke="#0088ff" stroke-width="2" />
+  <!-- Police Strobes -->
+  <circle cx="12" cy="32" r="4" fill="#f00">
+    <animate attributeName="opacity" values="1;0;1" dur="0.5s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="52" cy="32" r="4" fill="#00f">
+    <animate attributeName="opacity" values="0;1;0" dur="0.5s" repeatCount="indefinite" />
+  </circle>
+  <!-- Visor -->
+  <rect x="24" y="29" width="16" height="3" fill="#0088ff" />
+</svg>

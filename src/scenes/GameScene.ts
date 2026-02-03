@@ -4,7 +4,7 @@ import { MapGenerator } from '../core/MapGenerator';
 import { Player } from '../objects/Player';
 import { ZoneSystem } from '../systems/ZoneSystem';
 import { Enemy } from '../objects/enemies/Enemy';
-import { Police } from '../objects/enemies/ConcreteEnemies';
+import { Junkie, Police } from '../objects/enemies/ConcreteEnemies';
 import { Car } from '../objects/vehicles/Car';
 import { Projectile } from '../objects/Projectile';
 import { WeaponFactory } from '../objects/weapons/WeaponFactory';
@@ -112,13 +112,14 @@ export class GameScene extends Phaser.Scene {
         // Loot Interactions
         if (mapData.lootGroup) {
             this.setupLootInteractions(mapData.lootGroup);
-            mapData.lootGroup.getChildren().forEach((child: any) => {
-                if (child.setPipeline) child.setPipeline('Light2D');
-            });
+            // Light2D pipeline is already handled in Loot.ts constructor now
         }
 
         // Combat
         this.physics.add.overlap(this.projectiles, this.enemies, this.handleProjectileEnemyHit, undefined, this);
+        if (mapData.buildings) {
+            this.physics.add.collider(this.projectiles, mapData.buildings, (p: any) => p.destroy());
+        }
 
         // Camera Setup
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
@@ -152,6 +153,19 @@ export class GameScene extends Phaser.Scene {
                     this.player.inventory.addItem(type, l.amount);
                 }
                 l.destroy();
+            } else if (type.includes('weapon')) {
+                // Auto pick up weapon only if slot is empty (optional but helpful for user)
+                if (!this.player.inventory.primaryWeapon || !this.player.inventory.secondaryWeapon) {
+                    let weapon;
+                    if (type === 'weapon_ak47') weapon = WeaponFactory.createAK47(this);
+                    else if (type === 'weapon_glock') weapon = WeaponFactory.createGlock(this);
+                    else if (type === 'weapon_shotgun') weapon = WeaponFactory.createShotgun(this);
+
+                    if (weapon) {
+                        this.player.inventory.equipWeapon(weapon);
+                        l.destroy();
+                    }
+                }
             }
         });
     }
@@ -234,11 +248,17 @@ export class GameScene extends Phaser.Scene {
     }
 
     private spawnEnemies() {
-        // Spawn 3 Police for now
+        // Spawn 3 Police
         for (let i = 0; i < 3; i++) {
             const pos = this.getRandomSafePosition();
             const police = new Police(this, pos.x, pos.y);
             this.enemies.add(police);
+        }
+        // Spawn 5 Junkies
+        for (let i = 0; i < 5; i++) {
+            const pos = this.getRandomSafePosition();
+            const junkie = new Junkie(this, pos.x, pos.y);
+            this.enemies.add(junkie);
         }
     }
 

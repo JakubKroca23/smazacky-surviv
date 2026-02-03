@@ -30,7 +30,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     private flashlight: Phaser.GameObjects.Light;
 
     constructor(scene: Phaser.Scene, x: number, y: number, nickname: string = 'Survivor') {
-        super(scene, x, y, 'player-survivor'); // Use new asset
+        super(scene, x, y, 'player-cyber'); // Use new SVG asset
 
         scene.add.existing(this);
         scene.physics.add.existing(this);

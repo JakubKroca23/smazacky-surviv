@@ -27,6 +27,10 @@ export class Loot extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
         this.setPipeline('Light2D');
 
+        // Add Light Glow
+        const glowColor = type.includes('ammo') ? 0x00ff00 : (type.includes('weapon') ? 0x00fbff : 0xff00ff);
+        scene.lights.addLight(x, y, 100, glowColor, 1.5);
+
         this.setDepth(5); // Below player
         this.setScale(0.8);
 
